@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Login Form with Captcha</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: sans-serif;
+      background-color: #50d8d7;
+      background-image: linear-gradient(316deg, #50d8d7 0%, #923993 74%);
+    }
+    .container {
+      display: grid;
+      grid-template-columns: 800px 1fr;
+      gap: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+margin-top:80px;
+    }
+    .welcome-message {
+background: rgba( 255, 255, 255, 0.5 );
+box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
+backdrop-filter: blur( 0.5px );
+-webkit-backdrop-filter: blur( 0.5px );
+border-radius: 10px;
+border: 1px solid rgba( 255, 255, 255, 0.18 );
+      padding: 30px;
+      
+      
+margin-right:10px;
+cursor:pointer;
+    }
+
+    .welcome-message h2 {
+      font-size: 36px;
+      
+color: #fff;
+    }
+.welcome-message p {
+     margin-top:20px; 
+font-size:20px;     
+color: #fff;
+    }
+
+    .login-form {
+      background: #fff;
+      padding: 20px 30px;
+      
+      box-shadow: rgba(17, 12, 46, 0.15) 0px 48px 100px 0px;
+    }
+    .login-form .form-title {
+      text-align:center;
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      color: #111;
+    }
+    .login-form .form-input {
+      margin-bottom: 10px;
+    }
+    .login-form .form-input label,
+    .login-form .captcha label {
+      display: block;
+      font-size: 15px;
+      color: #111;
+      margin-bottom: 5px;
+    }
+    .login-form .form-input input {
+      width: 100%;
+      padding: 10px;
+      outline: none;
+      border-radius: 4px;
+      border: 1px solid #888;
+      font-size: 15px;
+    }
+    .login-form .captcha {
+      margin-bottom: 15px;
+    }
+    .login-form .captcha .preview {
+       color: #B2FFFF; 
+      width: 100%;
+      text-align: center;
+      height: 40px;
+      line-height: 40px;
+      letter-spacing: 8px;
+      border: 1px dashed #888;
+      border-radius: 4px;
+      font-family: "monospace";
+    }
+    .login-form .captcha .preview span {
+      display: inline-block;
+      user-select: none;
+    }
+    .login-form .captcha .captcha-form {
+      display: flex;
+    }
+    .login-form .captcha .captcha-form input {
+      width: 100%;
+      outline: none;
+      padding: 8px;
+      border-radius: 4px;
+      border: 1px solid #888;
+
+
+    }
+    .login-form .captcha .captcha-form .captcha-refresh {
+      width: 40px;
+      border: none;
+      outline: none;
+      background: purple;
+      border-radius: 4px;
+      color: #B2FFFF;
+      cursor: pointer;
+    }
+    #login-btn {
+      margin-top: 10px;
+      width: 100%;
+      padding: 12px;
+      border: none;
+      outline: none;
+      font-size: 15px;
+      text-transform: uppercase;
+      background: #4c81ff;
+      border-radius: 5px;
+      background-image: linear-gradient(316deg, #50d8d7 0%, #923993 74%);
+
+      transition: .3s;
+      cursor: pointer;
+    }
+    #login-btn:hover {
+      opacity: .8;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="welcome-message">
+      <h2>Hello, Welcome Back to the website!</h2>
+ <p>Welcome to our website dedicated to the fascinating world of physics innovations and inventions. Here, you'll discover groundbreaking discoveries, revolutionary technologies, and inspiring stories that showcase the marvels of physics and its impact on our lives. Whether you're a student, educator, researcher, or simply curious about the wonders of the universe, our platform offers a wealth of knowledge, resources, and insights to ignite your passion for physics. Join us on this journey of exploration and uncover the incredible achievements that shape the future of science and technology.</p>
+
+    </div>
+    <div class="login-form">
+      <div class="form-title">
+        Login
+      </div>
+      <div class="form-input">
+        <label for="username">Username</label>
+        <input type="text" id="username">
+      </div>
+      <div class="form-input">
+        <label for="password">Password</label>
+        <input type="password" id="password">
+      </div>
+      <div class="captcha">
+        <label for="captcha-input">Enter Captcha</label>
+        <div class="preview"></div>
+        <div class="captcha-form">
+          <input type="text" id="captcha-form" placeholder="Enter captcha text">
+          <button class="captcha-refresh">
+            <i class="fa fa-refresh"></i>
+          </button>
+        </div>
+      </div>
+      <div class="form-input">
+        <button id="login-btn">Login</button>
+      </div>
+    </div>
+  </div>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <script>
+    (function(){
+      const fonts = ["cursive","sans-serif","serif","monospace"];
+      let captchaValue = "";
+      function generateCaptcha(){
+        let value = btoa(Math.random()*1000000000);
+        value = value.substr(0,5+Math.random()*5);
+        captchaValue = value;
+      }
+      function setCaptcha(){
+        let html = captchaValue.split("").map((char)=>{
+          const rotate = -20 + Math.trunc(Math.random()*30);
+          const font = Math.trunc(Math.random()*fonts.length);
+          return `<span
+            style="
+              transform:rotate(${rotate}deg);
+              font-family:${fonts[font]}
+            "
+          >${char}</span>`;
+        }).join("");
+        document.querySelector(".login-form .captcha .preview").innerHTML = html;
+      }
+      function initCaptcha(){
+        document.querySelector(".login-form .captcha .captcha-refresh").addEventListener("click",function(){
+          generateCaptcha();
+          setCaptcha();
+        });
+        generateCaptcha();
+        setCaptcha();
+      }
+      initCaptcha();
+
+      document.querySelector(".login-form #login-btn").addEventListener("click",function(){
+        let inputCaptchaValue = document.querySelector(".login-form .captcha input").value;
+        if(inputCaptchaValue === captchaValue){
+          swal("", "Logging In!", "success");
+        } else {
+    swal("Invalid Captcha") }
+});    })();  </script>
+</body>
+</html>
